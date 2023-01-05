@@ -22,7 +22,7 @@ public class BoardManager : MonoBehaviour {
     public int columns = 8;
     public int rows = 8;
     public Count wallCount = new Count(5, 9);                           // Spawn a minimum of 5 walls per level, maximum of 9 walls per level
-    public Count foodCount = new Count(5, 9);
+    public Count foodCount = new Count(1, 5);
     public GameObject exit;
     public GameObject[] floorTiles;
     public GameObject[] wallTiles;
@@ -58,7 +58,7 @@ public class BoardManager : MonoBehaviour {
         // x = -1 here because we're building the coliding wall around the playable area
         for (int x = -1; x < columns + 1; x++)
         {
-            for (int y = -1; y < rows - 1; y++)
+            for (int y = -1; y < rows + 1; y++)
             {
                 GameObject toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
 

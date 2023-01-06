@@ -7,17 +7,17 @@ public class GameManager : MonoBehaviour {
 
     public float levelStartDelay = 2f;
     public float turnDelay = .1f;
-    public static GameManager instance = null; //singleton pattern
-    public BoardManager boardScript;
     public int playerFoodPoints = 100;
-    [HideInInspector] public bool playersTurn = true;
+    public static GameManager instance = null; //singleton pattern
+    public bool playersTurn = true;
 
     private Text levelText;
     private GameObject levelImage;
+    public BoardManager boardScript;
     private int level = 1; // test level 3 first, because that's where the enemies will appear
     private List<Enemy> enemies;
     private bool enemiesMoving;
-    private bool doingSetup;
+    private bool doingSetup = true;
 
     void Awake()
     {

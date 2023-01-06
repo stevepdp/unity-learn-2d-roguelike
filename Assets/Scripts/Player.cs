@@ -21,6 +21,7 @@ public class Player : MovingObject {
 
 	private Animator animator;
 	private int food;
+	private Vector3 touchOrigin = -Vector2.one; // vector2(-1, -1) is offscreen
 
 	protected override void Start ()
 	{
@@ -45,17 +46,44 @@ public class Player : MovingObject {
 		int horizontal = 0;
 		int vertical = 0;
 
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBPLAYER
+
 		horizontal = (int) Input.GetAxisRaw("Horizontal");
 		vertical = (int) Input.GetAxisRaw("Vertical");
 
 		if (horizontal != 0)
 			vertical = 0;
 
+#else
+		Touch myTouch = Input.touches[0]; // ignore other touches, because we're only supporting single player
+
+		if (Input.touchCount > 0)
+		{
+			if (myTouch.phase == TouchPhase.Began)
+			{
+				touchOrigin = myTouch.position;
+			}
+		}
+		else if (myTouch.phase == TouchPhase.Ended && touchOrigin.x >= 0)
+		{
+			Vector2 touchEnd = myTouch.position;
+			float x = touchEnd.x - touchOrigin.x;
+			float y = touchEnd.y - touchOrigin.y;
+			touchOrigin.x = -1;
+
+			if (Mathf.Abs(x) > Mathf.Abs(y))
+				horizontal = x > 0 ? 1 : -1;
+			else
+				vertical = y > 0 ? 1 : -1;
+		}
+#endif
+
 		if (horizontal != 0 || vertical != 0)
 			AttemptMove<Wall>(horizontal, vertical); // passing the generic parameter <T> (type) Wall here, because we're expecting the player to interact with a wall.
+
 	}
 
-    protected override void AttemptMove <T> (int xDir, int yDir)
+	protected override void AttemptMove <T> (int xDir, int yDir)
     {
 		food--;
 		foodText.text = "Food: " + food;
